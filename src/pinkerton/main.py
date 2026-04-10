@@ -1,4 +1,5 @@
 import re
+from pathlib import Path
 from urllib.parse import urljoin
 
 from requests import get, exceptions
@@ -7,7 +8,7 @@ from rich.console import Console
 console = Console()
 
 from src.pinkerton.settings import get_user_agent
-from src.pinkerton.modules.secret import scan
+from src.pinkerton.modules.secret import scan, scan_file
 
 disable_warnings()
 
@@ -62,3 +63,15 @@ def extract_js(url, page_content, custom_headers) -> None:
             final_url = urljoin(url, js_file)
             console.print(f"[[yellow]![/]] Scanning [yellow]{final_url}[/]", highlight=False)
             scan(final_url, custom_headers)
+
+
+def perform_local_scan(args) -> None:
+    """Scan a local JavaScript file for exposed secrets."""
+    path = Path(args.file)
+
+    if not path.is_file():
+        console.print(f"[[red]![/]] File not found: [yellow]{path}[/]", highlight=False)
+        return
+
+    console.print(f"[[yellow]![/]] Scanning local file [yellow]{path}[/]", highlight=False)
+    scan_file(str(path))

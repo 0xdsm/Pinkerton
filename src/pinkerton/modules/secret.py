@@ -144,9 +144,20 @@ _PATTERNS: dict = {
 }
 
 
-def scan(url: str, custom_headers: dict) -> None:
-    """Fetch a JavaScript file and scan it for exposed secrets."""
+def _scan_content(content: str, source: str) -> None:
+    """Run all patterns against normalized content and print matches."""
+    normalized = _normalize_js(content)
+    for name, pattern in _PATTERNS.items():
+        matches = pattern.findall(normalized)
+        if matches:
+            console.print(
+                f"\n[[green]+[/]] [yellow]{name}[/] found in [yellow]{source}[/]: {matches}\n",
+                highlight=False,
+            )
 
+
+def scan(url: str, custom_headers: dict) -> None:
+    """Fetch a remote JavaScript file and scan it for exposed secrets."""
     try:
         response: Response = get(url, headers=custom_headers, timeout=30)
         response.raise_for_status()
@@ -156,13 +167,18 @@ def scan(url: str, custom_headers: dict) -> None:
             highlight=False,
         )
         return
+    _scan_content(response.text, url)
 
-    content: str = _normalize_js(response.text)
 
-    for name, pattern in _PATTERNS.items():
-        matches = pattern.findall(content)
-        if matches:
-            console.print(
-                f"\n[[green]+[/]] [yellow]{name}[/] found in [yellow]{url}[/]: {matches}\n",
-                highlight=False,
-            )
+def scan_file(path: str) -> None:
+    """Read a local JavaScript file and scan it for exposed secrets."""
+    try:
+        with open(path, encoding='utf-8', errors='replace') as f:
+            content = f.read()
+    except OSError as os_error:
+        console.print(
+            f"[[red]![/]] Failed to read [yellow]{path}[/]: {os_error}",
+            highlight=False,
+        )
+        return
+    _scan_content(content, path)
