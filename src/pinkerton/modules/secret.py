@@ -151,7 +151,7 @@ def _scan_content(content: str, source: str) -> None:
         matches = pattern.findall(normalized)
         if matches:
             console.print(
-                f"\n[[green]+[/]] [yellow]{name}[/] found in [yellow]{source}[/]: {matches}\n",
+                f"\n[[green]+[/]] [yellow]{name}[/] found in [yellow]{source}[/]: {matches}",
                 highlight=False,
             )
 

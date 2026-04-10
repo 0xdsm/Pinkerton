@@ -75,3 +75,19 @@ def perform_local_scan(args) -> None:
 
     console.print(f"[[yellow]![/]] Scanning local file [yellow]{path}[/]", highlight=False)
     scan_file(str(path))
+
+
+def perform_js_scan(args) -> None:
+    """Fetch and scan a single remote JavaScript file directly."""
+    url = args.js_url
+
+    custom_headers = {
+        "User-Agent": get_user_agent(),
+    }
+
+    for header in args.HEADER:
+        name, value = header
+        custom_headers[name] = value
+
+    console.print(f"[[yellow]![/]] Scanning [yellow]{url}[/]", highlight=False)
+    scan(url, custom_headers)
