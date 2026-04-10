@@ -1,7 +1,7 @@
 from rich.console import Console
 console = Console()
 
-def banner() -> str:
+def banner() -> None:
     " Prints Pinkerton's banner "
 
     console.print("""[bold yellow]

@@ -12,7 +12,7 @@ from src.pinkerton.modules.secret import scan, scan_file
 
 disable_warnings()
 
-def perform_checks(args) -> None:
+def perform_checks(args) -> bool:
     " Check if target is accessible "
 
     url = args.url
@@ -33,6 +33,7 @@ def perform_checks(args) -> None:
         if(response.ok):
             console.print(f"[[green]+[/]] Connected sucessfully with [yellow]{url}[/]", highlight=False)
             extract_js(url, page_content, custom_headers)
+            return True
         else:
             console.print(f"[[red]![/]] {url} returned {status_code} status code", highlight=False)
             return False
