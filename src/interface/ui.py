@@ -5,7 +5,7 @@ def banner() -> str:
     " Prints Pinkerton's banner "
 
     console.print("""[bold yellow]
-Pinkerton 1.7
+Pinkerton 1.8
 Investigating JavaScript files since 1850
 by 000pp
 """)

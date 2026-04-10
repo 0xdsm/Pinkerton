@@ -1,3 +1,12 @@
+# 1.8 - 10/03/2026
+- Improved the code
+- Fixed false positives
+- Improved performance
+- Removed jsbeautifier lib
+- Added more regexes matches
+
+<br>
+
 # 1.7 - 10/05/2025
 - Removed "banner.txt" file
 - Removed ASCII art from banner
