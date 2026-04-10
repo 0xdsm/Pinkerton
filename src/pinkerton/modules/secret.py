@@ -1,8 +1,19 @@
-from re import compile, Pattern, IGNORECASE
+from re import compile, sub
 from requests import get, Response, exceptions
 from rich.console import Console
 
 console = Console()
+
+_STATEMENT_BOUNDARY = compile(r'([;{}])')
+
+
+def _normalize_js(content: str) -> str:
+    """
+    O(n) normalization: inserts newlines at JS statement boundaries.
+    Limits the scope of greedy .* patterns that would otherwise span
+    the entire file in single-line minified JavaScript.
+    """
+    return _STATEMENT_BOUNDARY.sub(r'\1\n', content)
 
 _PATTERNS: dict = {
     # AWS
@@ -146,7 +157,7 @@ def scan(url: str, custom_headers: dict) -> None:
         )
         return
 
-    content: str = response.text
+    content: str = _normalize_js(response.text)
 
     for name, pattern in _PATTERNS.items():
         matches = pattern.findall(content)
